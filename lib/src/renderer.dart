@@ -1,4 +1,5 @@
 import 'package:mustache_template/mustache.dart' as m;
+
 import 'lambda_context.dart';
 import 'node.dart';
 import 'template.dart';
@@ -94,7 +95,7 @@ class Renderer extends Visitor {
 
     if (value == noSuchProperty) {
       if (!lenient) {
-        throw error('Value was missing for variable tag: ${node.name}.', node);
+        //throw error('Value was missing for variable tag: ${node.name}.', node);
       }
     } else {
       var valueString = (value == null) ? '' : value.toString();
