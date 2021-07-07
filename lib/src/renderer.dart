@@ -97,6 +97,13 @@ class Renderer extends Visitor {
       if (!lenient) {
         //throw error('Value was missing for variable tag: ${node.name}.', node);
       }
+      var valueString = (value == null)
+          ? '${{
+              {node.name}
+            }}'
+          : value.toString();
+      var output = !node.escape || !htmlEscapeValues ? valueString : _htmlEscape(valueString);
+      write(output);
     } else {
       var valueString = (value == null) ? '' : value.toString();
       var output = !node.escape || !htmlEscapeValues
