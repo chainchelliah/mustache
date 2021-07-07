@@ -9,29 +9,21 @@ const Object noSuchProperty = Object();
 final RegExp _integerTag = RegExp(r'^[0-9]+$');
 
 class Renderer extends Visitor {
-  Renderer(this.sink, List stack, this.lenient, this.htmlEscapeValues,
-      this.partialResolver, this.templateName, this.indent, this.source)
+  Renderer(this.sink, List stack, this.lenient, this.htmlEscapeValues, this.partialResolver, this.templateName,
+      this.indent, this.source)
       : _stack = List.from(stack);
 
   Renderer.partial(Renderer ctx, Template partial, String indent)
-      : this(
-            ctx.sink,
-            ctx._stack,
-            ctx.lenient,
-            ctx.htmlEscapeValues,
-            ctx.partialResolver,
-            ctx.templateName,
-            ctx.indent + indent,
-            partial.source);
+      : this(ctx.sink, ctx._stack, ctx.lenient, ctx.htmlEscapeValues, ctx.partialResolver, ctx.templateName,
+            ctx.indent + indent, partial.source);
 
   Renderer.subtree(Renderer ctx, StringSink sink)
-      : this(sink, ctx._stack, ctx.lenient, ctx.htmlEscapeValues,
-            ctx.partialResolver, ctx.templateName, ctx.indent, ctx.source);
+      : this(sink, ctx._stack, ctx.lenient, ctx.htmlEscapeValues, ctx.partialResolver, ctx.templateName, ctx.indent,
+            ctx.source);
 
-  Renderer.lambda(Renderer ctx, String source, String indent, StringSink sink,
-      String delimiters)
-      : this(sink, ctx._stack, ctx.lenient, ctx.htmlEscapeValues,
-            ctx.partialResolver, ctx.templateName, ctx.indent + indent, source);
+  Renderer.lambda(Renderer ctx, String source, String indent, StringSink sink, String delimiters)
+      : this(sink, ctx._stack, ctx.lenient, ctx.htmlEscapeValues, ctx.partialResolver, ctx.templateName,
+            ctx.indent + indent, source);
 
   final StringSink sink;
   final List _stack;
@@ -97,18 +89,14 @@ class Renderer extends Visitor {
       if (!lenient) {
         //throw error('Value was missing for variable tag: ${node.name}.', node);
       }
-      var valueString = (value == null)
-          ? '${{
-              {node.name}
-            }}'
-          : value.toString();
+      var valueString = '${{
+        {node.name}
+      }}';
       var output = !node.escape || !htmlEscapeValues ? valueString : _htmlEscape(valueString);
       write(output);
     } else {
       var valueString = (value == null) ? '' : value.toString();
-      var output = !node.escape || !htmlEscapeValues
-          ? valueString
-          : _htmlEscape(valueString);
+      var output = !node.escape || !htmlEscapeValues ? valueString : _htmlEscape(valueString);
       write(output);
     }
   }
@@ -167,8 +155,7 @@ class Renderer extends Visitor {
       if (lenient) {
         _renderWithValue(node, null);
       } else {
-        throw error(
-            'Value was missing for inverse section: ${node.name}.', node);
+        throw error('Value was missing for inverse section: ${node.name}.', node);
       }
     } else if (value is Function) {
       // Do nothing.
@@ -196,9 +183,7 @@ class Renderer extends Visitor {
   @override
   void visitPartial(PartialNode node) {
     var partialName = node.name;
-    var template = partialResolver == null
-        ? null
-        : (partialResolver!(partialName) as Template?);
+    var template = partialResolver == null ? null : (partialResolver!(partialName) as Template?);
     if (template != null) {
       var renderer = Renderer.partial(this, template, node.indent);
       var nodes = getTemplateNodes(template);
@@ -249,8 +234,7 @@ class Renderer extends Visitor {
     return noSuchProperty;
   }
 
-  m.TemplateException error(String message, Node node) =>
-      TemplateException(message, templateName, source, node.start);
+  m.TemplateException error(String message, Node node) => TemplateException(message, templateName, source, node.start);
 
   static const Map<int, String> _htmlEscapeMap = {
     _AMP: '&amp;',
@@ -266,12 +250,7 @@ class Renderer extends Visitor {
     var startIndex = 0;
     var i = 0;
     for (var c in s.runes) {
-      if (c == _AMP ||
-          c == _LT ||
-          c == _GT ||
-          c == _QUOTE ||
-          c == _APOS ||
-          c == _FORWARD_SLASH) {
+      if (c == _AMP || c == _LT || c == _GT || c == _QUOTE || c == _APOS || c == _FORWARD_SLASH) {
         buffer.write(s.substring(startIndex, i));
         buffer.write(_htmlEscapeMap[c]);
         startIndex = i + 1;
